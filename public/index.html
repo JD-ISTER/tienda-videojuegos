@@ -3,60 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GamePub - Tienda de Videojuegos</title>
+  <title>GamePub - "LA" Tienda de Videojuegos</title>
   <link rel="stylesheet" href="output.css">
   <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
-<body class="bg-gray-100">
-  <header class="bg-blue-600 text-white p-4">
-    <h1 class="text-2xl font-bold">GamePub</h1>
-    <p class="text-sm">Encuentra las mejores ofertas en videojuegos</p>
+<body class="bg-gradient-to-br from-gray-900 to-gray-800 text-gray-100 min-h-screen">
+  <header class="bg-gradient-to-r from-blue-700 to-indigo-800 p-6 text-center shadow-xl">
+    <h1 class="text-4xl font-bold tracking-wide">🎮 GamePub</h1>
+    <p class="mt-2 text-lg italic text-blue-200">Encuentra las mejores ofertas en videojuegos</p>
   </header>
 
-  <main class="container mx-auto p-4">
-    <div class="flex flex-col md:flex-row gap-4 mb-6">
-      <input id="searchInput" type="text" placeholder="Buscar videojuego..." class="border rounded p-2 w-full">
-      <button id="searchBtn" class="bg-blue-500 text-white p-2 rounded">Buscar</button>
-    </div>
-
-    <div class="flex flex-wrap gap-4 mb-6">
-      <select id="storeFilter" class="border rounded p-2">
-        <option value="">Todas las tiendas</option>
-        <option value="1">Steam</option>
-        <option value="11">Epic</option>
-      </select>
-      <select id="sortSelect" class="border rounded p-2">
-        <option value="default">Ordenar por</option>
-        <option value="price_low">Precio (menor a mayor)</option>
-        <option value="price_high">Precio (mayor a menor)</option>
-      </select>
-    </div>
-
-    <div id="loadingSpinner" class="hidden">
-      <div class="text-center">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-        <p>Cargando...</p>
+  <main class="container mx-auto p-4 max-w-7xl">
+    <!-- Sección de búsqueda y filtros -->
+    <section class="mb-10 bg-gray-800 p-6 rounded-xl shadow-lg">
+      <div class="flex flex-col md:flex-row gap-4 items-center">
+        <div class="w-full">
+          <label for="searchInput" class="block text-sm font-medium mb-1">Buscar videojuego</label>
+          <div class="flex">
+            <input id="searchInput" type="text" placeholder="Ej: Cyberpunk 2077..." class="border border-gray-600 rounded-l p-3 w-full bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button id="searchBtn" class="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-r font-semibold transition">🔍 Buscar</button>
+          </div>
+        </div>
       </div>
+
+      <div class="flex flex-wrap gap-4 mt-4">
+        <div>
+          <label for="storeFilter" class="block text-sm font-medium mb-1">Filtrar por tienda</label>
+          <select id="storeFilter" class="border border-gray-600 rounded p-2 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="">Todas las tiendas</option>
+            <option value="1">Steam</option>
+            <option value="11">Epic</option>
+          </select>
+        </div>
+        <div>
+          <label for="sortSelect" class="block text-sm font-medium mb-1">Ordenar por</label>
+          <select id="sortSelect" class="border border-gray-600 rounded p-2 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="default">Por defecto</option>
+            <option value="price_low">Precio (menor a mayor)</option>
+            <option value="price_high">Precio (mayor a menor)</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Indicadores -->
+    <div id="loadingSpinner" class="hidden text-center py-10">
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <p class="mt-4 text-xl">Cargando juegos...</p>
     </div>
 
-    <div id="errorMessage" class="hidden text-red-500 text-center">Error al cargar los datos</div>
+    <div id="errorMessage" class="hidden text-red-400 text-center text-xl py-10">⚠️ Error al cargar los datos. Intenta de nuevo más tarde.</div>
 
-    <div id="gamesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    <!-- Grid de videojuegos -->
+    <div id="gamesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
 
-    <div class="mt-6 text-center">
-      <button id="loadMoreBtn" class="bg-green-500 text-white px-4 py-2 rounded">Cargar más</button>
+    <div class="mt-10 text-center">
+      <button id="loadMoreBtn" class="bg-gradient-to-r from-green-600 to-emerald-700 hover:from-green-700 hover:to-emerald-800 text-white px-6 py-3 rounded-full font-bold shadow-lg transition transform hover:scale-105">Cargar más</button>
     </div>
   </main>
 
   <!-- Modal -->
-  <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-lg w-full max-w-md p-6">
-      <h2 id="modalTitle" class="text-xl font-bold mb-2"></h2>
-      <img id="modalImage" class="w-full h-auto mb-4">
-      <p>Precio normal: <span id="modalNormalPrice"></span></p>
-      <p>Precio oferta: <span id="modalSalePrice"></span></p>
-      <a id="modalStoreLink" href="#" target="_blank" class="text-blue-500 underline">Ver en la tienda</a>
-      <button id="closeModal" class="mt-4 bg-gray-300 px-4 py-2 rounded">Cerrar</button>
+  <div id="modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-gray-800 rounded-xl w-full max-w-md p-6 shadow-2xl border border-gray-700">
+      <h2 id="modalTitle" class="text-2xl font-bold mb-4 text-center text-blue-300"></h2>
+      <img id="modalImage" class="w-full h-auto rounded-lg mb-4 border border-gray-700">
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <p class="text-gray-300">Precio normal:</p>
+        <p class="text-gray-300 text-right">$<span id="modalNormalPrice"></span></p>
+        <p class="text-green-400 font-bold">Precio oferta:</p>
+        <p class="text-green-400 font-bold text-right">$<span id="modalSalePrice"></span></p>
+      </div>
+      <a id="modalStoreLink" href="#" target="_blank" class="block text-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-semibold transition mb-4">🛒 Ver en la tienda</a>
+      <button id="closeModal" class="w-full bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded font-medium transition">Cerrar</button>
     </div>
   </div>
 

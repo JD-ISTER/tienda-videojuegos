@@ -31,10 +31,21 @@ async function fetchGames(page = 0, store = '', search = '') {
   }
 }
 
+// Funcion para ordenar los juegos
+function sortGames(games, sortBy) {
+  if (sortBy === 'price_low') {
+    return games.sort((a, b) => parseFloat(a.salePrice) - parseFloat(b.salePrice));
+  } else if (sortBy === 'price_high') {
+    return games.sort((a, b) => parseFloat(b.salePrice) - parseFloat(a.salePrice));
+  }
+  return games;
+}
+
 // Funcion para mostrar los juegos
 function renderGames(games) {
+  const sortedGames = sortSelect.value ? sortGames([...games], sortSelect.value) : games;
   gamesGrid.innerHTML = '';
-  games.forEach(game => {
+  sortedGames.forEach(game => {
     const gameCard = document.createElement('div');
     gameCard.className = 'bg-white rounded-lg shadow p-4';
     gameCard.innerHTML = `
@@ -47,13 +58,13 @@ function renderGames(games) {
     gamesGrid.appendChild(gameCard);
   });
 
-  // Añadir eventos a los botones de los detalles
+  // Anadir eventos a los botones de los detalles
   document.querySelectorAll('.viewDetailBtn').forEach(btn => {
     btn.addEventListener('click', () => openModal(btn.dataset.id));
   });
 }
 
-// Funcion para mostrar los detalle
+// Funcion para mostrar los detalles
 async function openModal(gameID) {
   try {
     const response = await fetch(`${API_BASE}/games?id=${gameID}`);
@@ -70,7 +81,7 @@ async function openModal(gameID) {
   }
 }
 
-// Loseventos
+// Los eventos
 document.getElementById('closeModal').addEventListener('click', () => {
   document.getElementById('modal').classList.add('hidden');
 });
@@ -92,7 +103,11 @@ storeFilter.addEventListener('change', () => {
   fetchGames(0, storeFilter.value, searchInput.value);
 });
 
-// Indicadores
+sortSelect.addEventListener('change', () => {
+  renderGames(currentGames); // Re-renderizar con ordenamiento
+});
+
+// Los indicadores de progreso y error 
 function showLoading() {
   loadingSpinner.classList.remove('hidden');
   errorMessage.classList.add('hidden');

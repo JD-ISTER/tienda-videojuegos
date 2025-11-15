@@ -12,7 +12,7 @@ const searchInput = document.getElementById('searchInput');
 const storeFilter = document.getElementById('storeFilter');
 const sortSelect = document.getElementById('sortSelect');
 
-// Funcion para obtener los juegos
+// Función para obtener los juegos de la tienda
 async function fetchGames(page = 0, store = '', search = '') {
   try {
     showLoading();
@@ -31,7 +31,7 @@ async function fetchGames(page = 0, store = '', search = '') {
   }
 }
 
-// Funcion para ordenar los juegos
+// Función para ordenar juegos los juegos coherentemente
 function sortGames(games, sortBy) {
   if (sortBy === 'price_low') {
     return games.sort((a, b) => parseFloat(a.salePrice) - parseFloat(b.salePrice));
@@ -41,10 +41,10 @@ function sortGames(games, sortBy) {
   return games;
 }
 
-// Funcion para mostrar los juegos
+// Función para renderizar juegos
 function renderGames(games) {
   const sortedGames = sortSelect.value ? sortGames([...games], sortSelect.value) : games;
-  gamesGrid.innerHTML = '';
+  gamesGrid.innerHTML = ''; // Limpiar antes de renderizar para evitar duplicados
   sortedGames.forEach(game => {
     const gameCard = document.createElement('div');
     gameCard.className = 'bg-white rounded-lg shadow p-4';
@@ -58,13 +58,13 @@ function renderGames(games) {
     gamesGrid.appendChild(gameCard);
   });
 
-  // Anadir eventos a los botones de los detalles
+  // Añadir eventos a los botones de detalle
   document.querySelectorAll('.viewDetailBtn').forEach(btn => {
     btn.addEventListener('click', () => openModal(btn.dataset.id));
   });
 }
 
-// Funcion para mostrar los detalles
+// Función para mostrar el detalle
 async function openModal(gameID) {
   try {
     const response = await fetch(`${API_BASE}/games?id=${gameID}`);
@@ -81,7 +81,7 @@ async function openModal(gameID) {
   }
 }
 
-// Los eventos
+// Eventos
 document.getElementById('closeModal').addEventListener('click', () => {
   document.getElementById('modal').classList.add('hidden');
 });
@@ -107,7 +107,7 @@ sortSelect.addEventListener('change', () => {
   renderGames(currentGames); // Re-renderizar con ordenamiento
 });
 
-// Los indicadores de progreso y error 
+// Indicadores (Carga y Error)
 function showLoading() {
   loadingSpinner.classList.remove('hidden');
   errorMessage.classList.add('hidden');
